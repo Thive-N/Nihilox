@@ -45,9 +45,10 @@ class ExpressionASTUnary: public ExpressionAST {
 };
 
 class ExpressionASTCall: public ExpressionAST {
+  public:
 	std::string									Call;
-	std::vector<std::unique_ptr<ExpressionAST>> Args;
-	ExpressionASTCall(std::string Call, std::vector<std::unique_ptr<ExpressionAST>> Args)
+	std::vector<ExpressionAST *> Args;
+	ExpressionASTCall(std::string Call, std::vector<ExpressionAST *> Args)
 		: Call(std::move(Call)), Args(std::move(Args))
 	{
 	}
@@ -59,17 +60,6 @@ class PrototypeAST {
 	std::string				 Name;
 	std::vector<std::string> Args;
 	PrototypeAST(std::string Name, std::vector<std::string> Args): Name(std::move(Name)), Args(std::move(Args)) {}
-};
-
-// FunctionAST - Node that represents a function definition such as `<prototype>
-// { body }`
-class FunctionAST {
-	std::unique_ptr<PrototypeAST>  Proto;
-	std::unique_ptr<ExpressionAST> Body;
-	FunctionAST(std::unique_ptr<PrototypeAST> Proto, std::unique_ptr<ExpressionAST> Body)
-		: Proto(std::move(Proto)), Body(std::move(Body))
-	{
-	}
 };
 
 #endif // UNSTABLE_AST_H

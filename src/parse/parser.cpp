@@ -89,7 +89,20 @@ ExpressionAST *parser::parsePrimary()
 	}
 
 	else if (std::regex_match(nx, std::regex("[a-zA-Z]([a-zA-Z0-9])*"))) {
-		return new ExpressionASTVariable(nx);
+		if (peek() == "(") {
+			std::vector<ExpressionAST *> args;
+			next(); // consume the '('
+			while (peek() != ")") {
+				args.push_back(parseExpression());
+				if (peek() == ",") {
+					next(); // consume the ','
+				}
+			}
+			next(); // consume the ')'
+			return new ExpressionASTCall(nx, args);
+		} else {
+			return new ExpressionASTVariable(nx);
+		}
 	}
 
 	else

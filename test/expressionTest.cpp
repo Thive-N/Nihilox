@@ -13,7 +13,7 @@ ExpressionAST* parseExpression(std::string expr){
 	return p.parseExpression();
 }
 
-TEST(GeneratedTest, expressionTest) {
+TEST(BasicTests, ExpressionTest) {
 	auto expressions = new std::unordered_map<std::string, std::string>();
 	expressions->insert({"1 + 2 * 3;", "(1 + (2 * 3))"});
 	expressions->insert({"1 * 2 + 3;", "((1 * 2) + 3)"});
@@ -27,7 +27,8 @@ TEST(GeneratedTest, expressionTest) {
 	expressions->insert({"1 + 2 == 3 == 4;", "((1 + 2) == (3 == 4))"});
 	expressions->insert({"1 + 2 * 3 == 4 == 5;", "((1 + (2 * 3)) == (4 == 5))"});
 	expressions->insert({"1 * 2 + 3 == 4 == 5;", "(((1 * 2) + 3) == (4 == 5))"});
-
+	expressions->insert({"num5() / 2 + 3 == 4 == 5;", "(((num5() / 2) + 3) == (4 == 5))"});
+	expressions->insert({"add(5 ,4+3 ,var);", "add(5, (4 + 3), var)"});
 	for (auto &expr : *expressions) {
 		auto ast = parseExpression(expr.first);
 		ASSERT_EQ(exprToString(ast),expr.second) << "Expression: " << exprToString(ast);
