@@ -27,6 +27,7 @@ set (PROJECT_SOURCES
 
 set(TEST_SOURCES
         expressionTest.cpp
+        lexerTest.cpp
         )
 
 add_executable(nihilox_tests ${PROJECT_HEADERS} ${PROJECT_SOURCES} ${TEST_SOURCES})
