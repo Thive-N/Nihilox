@@ -50,6 +50,21 @@ bool parser::isAtEnd() { return begin > end; }
 /// @note This will return the current token regardless of where the iterator is
 std::string parser::getToken() { return *begin; }
 
+StatementASTVariableDeclaration *parser::parseVariableDeclaration()
+{
+	auto name = next();
+	std::string type = "auto";
+	if (peek() == "::")
+		type = next();
+	if (next() != "=")
+		throw std::runtime_error("Error while parsing variable declaration expected '=' but got '" + getToken() + "'");
+	auto expr = parseExpression();
+	if (next() != ";")
+		throw std::runtime_error("Error while parsing variable declaration expected ';' but got '" + getToken() + "'");
+	return new StatementASTVariableDeclaration(name, type, *expr);
+}
+
+/// @return ExpressionAST* A pointer to an ExpressionAST object that contains the parsed expression tree
 ExpressionAST *parser::parseExpression() { return parseExpression(0); }
 ExpressionAST *parser::parseExpression(int precedence)
 {
@@ -70,6 +85,9 @@ ExpressionAST *parser::parseExpression(int precedence)
 	}
 }
 
+/// @return ExpressionAST* A pointer to an ExpressionAST object that contains the parsed primary expression
+/// @note This will parse a primary expression which is either a number, a variable, or a parenthesized expression
+///       or a unary expression or a function call with expressions as arguments
 ExpressionAST *parser::parsePrimary()
 {
 	auto nx = next();

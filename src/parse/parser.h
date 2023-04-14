@@ -31,6 +31,7 @@ class parser {
 	ExpressionAST *parsePrimary();
 	int			   getPrecedence(const std::string &op);
 	bool		   isOperator(const std::string &op);
+	StatementASTVariableDeclaration *parseVariableDeclaration();
 };
 
 #endif // UNSTABLE_PARSER_H

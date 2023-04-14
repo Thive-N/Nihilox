@@ -30,6 +30,7 @@ roadmap
 - [x] lexer (if you can call it that)
 - [x] basic ast
 - [x] basic parsing
+- [x] statement parsing
 - [ ] full ast
 - [ ] full parsing
 - [ ] codegen
