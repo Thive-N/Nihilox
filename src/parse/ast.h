@@ -95,7 +95,7 @@ class StatementASTConditional: public StatementAST {
 	{
 	}
 	ExpressionAST condition;
-	ExpressionAST trueBranch; // temporary
+	ExpressionAST trueBranch;  // temporary
 	ExpressionAST falseBranch; // temporary
 };
 

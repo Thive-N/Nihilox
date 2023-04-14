@@ -26,11 +26,11 @@ class parser {
 	std::vector<std::string>::const_iterator end;
 	std::vector<std::string>				 tokens;
 
-	ExpressionAST *parseExpression();
-	ExpressionAST *parseExpression(int precedence);
-	ExpressionAST *parsePrimary();
-	int			   getPrecedence(const std::string &op);
-	bool		   isOperator(const std::string &op);
+	ExpressionAST					*parseExpression();
+	ExpressionAST					*parseExpression(int precedence);
+	ExpressionAST					*parsePrimary();
+	int								 getPrecedence(const std::string &op);
+	bool							 isOperator(const std::string &op);
 	StatementASTVariableDeclaration *parseVariableDeclaration();
 };
 

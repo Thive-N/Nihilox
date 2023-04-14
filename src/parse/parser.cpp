@@ -52,10 +52,9 @@ std::string parser::getToken() { return *begin; }
 
 StatementASTVariableDeclaration *parser::parseVariableDeclaration()
 {
-	auto name = next();
+	auto		name = next();
 	std::string type = "auto";
-	if (peek() == "::")
-		type = next();
+	if (peek() == "::") type = next();
 	if (next() != "=")
 		throw std::runtime_error("Error while parsing variable declaration expected '=' but got '" + getToken() + "'");
 	auto expr = parseExpression();
@@ -118,7 +117,8 @@ ExpressionAST *parser::parsePrimary()
 			}
 			next(); // consume the ')'
 			return new ExpressionASTCall(nx, args);
-		} else {
+		}
+		else {
 			return new ExpressionASTVariable(nx);
 		}
 	}
