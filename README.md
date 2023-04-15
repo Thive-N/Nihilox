@@ -19,9 +19,11 @@ todo
 - [ ] add a license?
 - [ ] more explicit tokens (not strings)
 - [x] redo formatting
-- [ ] code cleanup
+- [x] code cleanup
 - [x] add more comments
 - [x] the roadmap
+- [ ] tokenizer class (maybe)
+- [ ] make some things private its getting annoying
 
 ---
 
@@ -31,10 +33,11 @@ roadmap
 - [x] basic ast
 - [x] basic parsing
 - [x] statement parsing
-- [ ] full ast
+- [x] full ast (not fully complete but good enough)
 - [ ] full parsing
 - [ ] codegen
 - [ ] add syntactic sugar
 - [ ] more sugar
 - [ ] standard library
+- [ ] profit
 

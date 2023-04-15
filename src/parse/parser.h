@@ -1,7 +1,7 @@
 #ifndef UNSTABLE_PARSER_H
 #define UNSTABLE_PARSER_H
 
-#include "ast.h"
+#include "../ast.h"
 
 class parser {
   public:

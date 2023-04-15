@@ -60,17 +60,16 @@ class ExpressionASTCall: public ExpressionAST {
 
 // end of ExpressionAST nodes
 
-// PrototypeAST - Node that represents a function prototype such as
-// `foo:datatype(bar:datatype, baz:datatype)`
-class PrototypeAST {
-	std::string				 Name;
-	std::vector<std::string> Args;
-	PrototypeAST(std::string Name, std::vector<std::string> Args): Name(std::move(Name)), Args(std::move(Args)) {}
-};
-
 class StatementAST {
   public:
 	virtual ~StatementAST() = default;
+};
+
+class BlockAST {
+  public:
+	~BlockAST() = default;
+	explicit BlockAST(std::vector<StatementAST *> statements): statements(std::move(statements)) {}
+	std::vector<StatementAST *> statements;
 };
 
 class StatementASTVariableDeclaration: public StatementAST {
@@ -89,21 +88,44 @@ class StatementASTVariableDeclaration: public StatementAST {
 class StatementASTConditional: public StatementAST {
   public:
 	~StatementASTConditional() override = default;
-	StatementASTConditional(const ExpressionAST &condition, const ExpressionAST &trueBranch,
-							const ExpressionAST &falseBranch)
+	StatementASTConditional(const ExpressionAST &condition, const BlockAST &trueBranch,
+							const BlockAST &falseBranch)
 		: condition(condition), trueBranch(trueBranch), falseBranch(falseBranch)
 	{
 	}
 	ExpressionAST condition;
-	ExpressionAST trueBranch;  // temporary
-	ExpressionAST falseBranch; // temporary
+	BlockAST trueBranch;
+	BlockAST falseBranch;
 };
 
-class BlockAST {
+class StatementASTLoop: public StatementAST {
   public:
-	~BlockAST() = default;
-	explicit BlockAST(std::vector<StatementAST *> statements): statements(std::move(statements)) {}
-	std::vector<StatementAST *> statements;
+	~StatementASTLoop() override = default;
+	StatementASTLoop(const ExpressionAST &condition, const BlockAST &body): condition(condition), body(body) {}
+	ExpressionAST condition;
+	BlockAST body;
+};
+
+/// PrototypeAST - Node that represents a function prototype such as
+/// `foo:datatype(bar:datatype, baz:datatype)`
+/// @todo: add support for function return types and arguments types
+class PrototypeAST {
+  public:
+	PrototypeAST(std::string Name, std::vector<std::string> Args): Name(std::move(Name)), Args(std::move(Args)) {}
+	std::string				 Name;
+	std::vector<std::string> Args;
+};
+
+// FunctionAST - Node that represents a function definition
+class FunctionAST {
+  public:
+	~FunctionAST() = default;
+	FunctionAST(std::unique_ptr<PrototypeAST> proto, std::unique_ptr<BlockAST> body)
+		: proto(std::move(proto)), body(std::move(body))
+	{
+	}
+	std::unique_ptr<PrototypeAST> proto;
+	std::unique_ptr<BlockAST>	 body;
 };
 
 #endif // UNSTABLE_AST_H

@@ -1,6 +1,6 @@
 #include "parser.h"
 
-#include "ast.h"
+#include "../ast.h"
 #include <regex>
 #include <utility>
 

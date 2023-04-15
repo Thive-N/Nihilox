@@ -1,4 +1,4 @@
-#include "ast.h"
+#include "../ast.h"
 
 std::string exprToString(ExpressionAST *expr)
 {

@@ -14,7 +14,7 @@ FetchContent_MakeAvailable(googletest)
 
 set (PROJECT_HEADERS
         ../src/lexer.h
-        ../src/parse/ast.h
+        ../src/ast.h
         ../src/parse/parser.h
         ../src/parse/pretty_print.h
         )
