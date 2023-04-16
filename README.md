@@ -22,7 +22,7 @@ todo
 - [x] code cleanup
 - [x] add more comments
 - [x] the roadmap
-- [ ] tokenizer class (maybe)
+- [x] tokenizer class
 - [ ] add parse error messages
 - [ ] make some things private its getting annoying
 
@@ -35,7 +35,7 @@ roadmap
 - [x] basic parsing
 - [x] statement parsing
 - [x] full ast (not fully complete but good enough)
-- [ ] full parsing
+- [x] full parsing
 - [ ] codegen
 - [ ] add syntactic sugar
 - [ ] more sugar

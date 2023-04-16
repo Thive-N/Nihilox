@@ -1,6 +1,7 @@
 #include "parser.h"
 
 #include "../ast.h"
+#include "../token_iterator.h"
 #include <regex>
 #include <utility>
 
@@ -8,81 +9,43 @@
 /// @note This moves the tokens_ to the parser class
 parser::parser(std::vector<std::string> &tokens_)
 {
-	tokens = std::move(tokens_); // move the tokens_ to the parser class
-	begin  = tokens.begin();	 // set the begin iterator to the beginning of the vector
-	end	   = tokens.end();		 // set the end iterator to the end of the vector
+	tokens = new token_iterator(tokens_);
 }
 
-/// @return The next token in the vector
-/// @note The iterator is incremented by one but moved back to the original position
-std::string parser::peek()
-{
-	if (notAtStart) {
-		begin++;
-		auto temp = *begin;
-		begin--;
-		return temp;
-	}
-	return *begin;
-}
-
-/// @return The next token in the vector
-/// @note The iterator is incremented by one
-std::string parser::next()
-{
-	if (notAtStart) {
-		begin++;	   // increment the iterator
-		return *begin; // return the token
-	}
-	notAtStart = true;
-	return *begin;
-}
-
-/// @note moves the iterator back by one
-/// useful in expression parsing so that no more than the required tokens are consumed
-void parser::back() { begin--; }
-
-/// @return if the iterator is at the end of the vector
-/// @note This will check if the iterator is at the end of the vector or beyond
-bool parser::isAtEnd() { return begin > end; }
-
-/// @return The current token
-/// @note This will return the current token regardless of where the iterator is
-std::string parser::getToken() { return *begin; }
 
 StatementASTVariableDeclaration *parser::parseVariableDeclaration()
 {
-	next(); // consume the let keyword
-	auto		name = next();
+	tokens->next(); // consume the let keyword
+	auto		name = tokens->next();
 	std::string type = "auto";
-	if (peek() == "::") {
-		next(); // consume the ::
-		type = next();
+	if (tokens->peek() == "::") {
+		tokens->next(); // consume the ::
+		type = tokens->next();
 	}
-	if (next() != "=")
-		throw std::runtime_error("Error while parsing variable declaration expected '=' but got '" + getToken() + "'");
+	if (tokens->next() != "=")
+		throw std::runtime_error("Error while parsing variable declaration expected '=' but got '" + tokens->getToken() + "'");
 	auto expr = parseExpression();
-	if (next() != ";")
-		throw std::runtime_error("Error while parsing variable declaration expected ';' but got '" + getToken() + "'");
+	if (tokens->next() != ";")
+		throw std::runtime_error("Error while parsing variable declaration expected ';' but got '" + tokens->getToken() + "'");
 	return new StatementASTVariableDeclaration(name, type, *expr);
 }
 
 StatementASTConditional *parser::parseConditional()
 {
-	next(); // consume the if keyword
+	tokens->next(); // consume the if keyword
 	auto condition = parseExpression();
 	auto trueBlock = parseBlock();
-	if (peek() != "else") {
+	if (tokens->peek() != "else") {
 		return new StatementASTConditional(*condition, *trueBlock);
 	} else {
-		next(); // consume the else keyword
+		tokens->next(); // consume the else keyword
 		auto falseBlock = parseBlock();
 		return new StatementASTConditional(*condition, *trueBlock, *falseBlock);
 	}
 }
 StatementASTLoop *parser::parseLoop()
 {
-	next(); // consume the while keyword
+	tokens->next(); // consume the while keyword
 	auto condition = parseExpression();
 	auto block	 = parseBlock();
 	return new StatementASTLoop(*condition, *block);
@@ -90,43 +53,43 @@ StatementASTLoop *parser::parseLoop()
 
 PrototypeAST *parser::parsePrototype()
 {
-	auto name = next();
-	if (next() != "(")
-		throw std::runtime_error("Error while parsing prototype expected '(' but got '" + getToken() + "'");
+	auto name = tokens->next();
+	if (tokens->next() != "(")
+		throw std::runtime_error("Error while parsing prototype expected '(' but got '" + tokens->getToken() + "'");
 	std::vector<std::string> args;
-	while (peek() != ")") {
-		args.push_back(next());
-		if (peek() == ",") {
-			next();
+	while (tokens->peek() != ")") {
+		args.push_back(tokens->next());
+		if (tokens->peek() == ",") {
+			tokens->next();
 		}
 	}
-	next(); // consume the )
+	tokens->next(); // consume the )
 	return new PrototypeAST(name, args);
 }
 
 FunctionAST *parser::parseReturn()
 {
-	next();
+	tokens->next();
 	auto proto = parsePrototype();
 	auto body = parseBlock();
 	return new FunctionAST(*proto, *body);
 }
 StatementAST *parser::parseStatement()
 {
-	if (peek() == "let") {
+	if (tokens->peek() == "let") {
 		return parseVariableDeclaration();
 	}
 	else {
-		throw std::runtime_error("Error while parsing statement expected 'let' but got '" + peek() + "'");
+		throw std::runtime_error("Error while parsing statement expected 'let' but got '" + tokens->peek() + "'");
 	}
 }
 BlockAST *parser::parseBlock()
 {
 	auto *statements = new std::vector<StatementAST *>;
-	while (peek() != "}") {
+	while (tokens->peek() != "}") {
 		statements->push_back(parseStatement());
 	}
-	next(); // consume the }
+	tokens->next(); // consume the }
 	auto *block = new BlockAST(*statements);
 	return block;
 }
@@ -140,14 +103,14 @@ ExpressionAST *parser::parseExpression(int precedence)
 	}
 
 	auto lhs   = parseExpression(precedence + 1);
-	auto token = next();
+	auto token = tokens->next();
 
 	if (isOperator(token) && getPrecedence(token) == precedence) {
 		auto rhs = parseExpression(precedence);
 		return new ExpressionASTBinary(token, lhs, rhs);
 	}
 	else {
-		back(); // move the iterator back by one
+		tokens->back(); // move the iterator back by one
 		return lhs;
 	}
 }
@@ -157,10 +120,10 @@ ExpressionAST *parser::parseExpression(int precedence)
 ///       or a unary expression or a function call with expressions as arguments
 ExpressionAST *parser::parsePrimary()
 {
-	auto nx = next();
+	auto nx = tokens->next();
 	if (nx == "(") {
 		auto expr = parseExpression();
-		if (next() != ")")
+		if (tokens->next() != ")")
 			throw std::runtime_error("Error while parsing primary expression expected ')' but got '" + nx + "'");
 		return expr;
 	}
@@ -174,16 +137,16 @@ ExpressionAST *parser::parsePrimary()
 	}
 
 	else if (std::regex_match(nx, std::regex("[a-zA-Z]([a-zA-Z0-9])*"))) {
-		if (peek() == "(") {
+		if (tokens->peek() == "(") {
 			std::vector<ExpressionAST *> args;
-			next(); // consume the '('
-			while (peek() != ")") {
+			tokens->next(); // consume the '('
+			while (tokens->peek() != ")") {
 				args.push_back(parseExpression());
-				if (peek() == ",") {
-					next(); // consume the ','
+				if (tokens->peek() == ",") {
+					tokens->next(); // consume the ','
 				}
 			}
-			next(); // consume the ')'
+			tokens->next(); // consume the ')'
 			return new ExpressionASTCall(nx, args);
 		}
 		else {
