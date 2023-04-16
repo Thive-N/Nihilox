@@ -52,15 +52,83 @@ std::string parser::getToken() { return *begin; }
 
 StatementASTVariableDeclaration *parser::parseVariableDeclaration()
 {
+	next(); // consume the let keyword
 	auto		name = next();
 	std::string type = "auto";
-	if (peek() == "::") type = next();
+	if (peek() == "::") {
+		next(); // consume the ::
+		type = next();
+	}
 	if (next() != "=")
 		throw std::runtime_error("Error while parsing variable declaration expected '=' but got '" + getToken() + "'");
 	auto expr = parseExpression();
 	if (next() != ";")
 		throw std::runtime_error("Error while parsing variable declaration expected ';' but got '" + getToken() + "'");
 	return new StatementASTVariableDeclaration(name, type, *expr);
+}
+
+StatementASTConditional *parser::parseConditional()
+{
+	next(); // consume the if keyword
+	auto condition = parseExpression();
+	auto trueBlock = parseBlock();
+	if (peek() != "else") {
+		return new StatementASTConditional(*condition, *trueBlock);
+	} else {
+		next(); // consume the else keyword
+		auto falseBlock = parseBlock();
+		return new StatementASTConditional(*condition, *trueBlock, *falseBlock);
+	}
+}
+StatementASTLoop *parser::parseLoop()
+{
+	next(); // consume the while keyword
+	auto condition = parseExpression();
+	auto block	 = parseBlock();
+	return new StatementASTLoop(*condition, *block);
+}
+
+PrototypeAST *parser::parsePrototype()
+{
+	auto name = next();
+	if (next() != "(")
+		throw std::runtime_error("Error while parsing prototype expected '(' but got '" + getToken() + "'");
+	std::vector<std::string> args;
+	while (peek() != ")") {
+		args.push_back(next());
+		if (peek() == ",") {
+			next();
+		}
+	}
+	next(); // consume the )
+	return new PrototypeAST(name, args);
+}
+
+FunctionAST *parser::parseReturn()
+{
+	next();
+	auto proto = parsePrototype();
+	auto body = parseBlock();
+	return new FunctionAST(*proto, *body);
+}
+StatementAST *parser::parseStatement()
+{
+	if (peek() == "let") {
+		return parseVariableDeclaration();
+	}
+	else {
+		throw std::runtime_error("Error while parsing statement expected 'let' but got '" + peek() + "'");
+	}
+}
+BlockAST *parser::parseBlock()
+{
+	auto *statements = new std::vector<StatementAST *>;
+	while (peek() != "}") {
+		statements->push_back(parseStatement());
+	}
+	next(); // consume the }
+	auto *block = new BlockAST(*statements);
+	return block;
 }
 
 /// @return ExpressionAST* A pointer to an ExpressionAST object that contains the parsed expression tree

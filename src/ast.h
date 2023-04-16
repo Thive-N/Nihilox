@@ -65,10 +65,16 @@ class StatementAST {
 	virtual ~StatementAST() = default;
 };
 
+class TopLevelAST {
+  public:
+	virtual ~TopLevelAST() = default;
+};
+
 class BlockAST {
   public:
 	~BlockAST() = default;
 	explicit BlockAST(std::vector<StatementAST *> statements): statements(std::move(statements)) {}
+	explicit BlockAST() : statements() {}
 	std::vector<StatementAST *> statements;
 };
 
@@ -91,6 +97,11 @@ class StatementASTConditional: public StatementAST {
 	StatementASTConditional(const ExpressionAST &condition, const BlockAST &trueBranch,
 							const BlockAST &falseBranch)
 		: condition(condition), trueBranch(trueBranch), falseBranch(falseBranch)
+	{
+	}
+
+	StatementASTConditional(const ExpressionAST &condition, const BlockAST &trueBranch)
+		: condition(condition), trueBranch(trueBranch), falseBranch()
 	{
 	}
 	ExpressionAST condition;
@@ -116,16 +127,16 @@ class PrototypeAST {
 	std::vector<std::string> Args;
 };
 
-// FunctionAST - Node that represents a function definition
-class FunctionAST {
+/// FunctionAST - Node that represents a function definition toplevel or in a block
+class FunctionAST : StatementAST, TopLevelAST {
   public:
-	~FunctionAST() = default;
-	FunctionAST(std::unique_ptr<PrototypeAST> proto, std::unique_ptr<BlockAST> body)
-		: proto(std::move(proto)), body(std::move(body))
+	~FunctionAST() override = default;
+	FunctionAST(PrototypeAST  proto, const BlockAST& body)
+		: proto(std::move(proto)), body(body)
 	{
 	}
-	std::unique_ptr<PrototypeAST> proto;
-	std::unique_ptr<BlockAST>	 body;
+	PrototypeAST proto;
+	BlockAST	 body;
 };
 
 #endif // UNSTABLE_AST_H

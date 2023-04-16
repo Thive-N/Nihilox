@@ -31,7 +31,13 @@ class parser {
 	ExpressionAST					*parsePrimary();
 	int								 getPrecedence(const std::string &op);
 	bool							 isOperator(const std::string &op);
+	StatementAST					*parseStatement();
+	BlockAST						*parseBlock();
 	StatementASTVariableDeclaration *parseVariableDeclaration();
+	StatementASTConditional			*parseConditional();
+	StatementASTLoop				*parseLoop();
+	FunctionAST						*parseReturn();
+	PrototypeAST					*parsePrototype();
 };
 
 #endif // UNSTABLE_PARSER_H

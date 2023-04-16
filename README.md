@@ -23,6 +23,7 @@ todo
 - [x] add more comments
 - [x] the roadmap
 - [ ] tokenizer class (maybe)
+- [ ] add parse error messages
 - [ ] make some things private its getting annoying
 
 ---
