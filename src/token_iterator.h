@@ -3,9 +3,10 @@
 
 #include <string>
 #include <vector>
-class token_iterator {
+
+template<typename Type> class token_iterator {
   public:
-	explicit token_iterator(std::vector<std::string> &tokens_)
+	explicit token_iterator(std::vector<Type> &tokens_)
 	{
 		tokens = std::move(tokens_); // move the tokens_ to the parser class
 		begin  = tokens.begin();	 // set the begin iterator to the beginning of the vector
@@ -14,7 +15,7 @@ class token_iterator {
 
 	/// @return The next token in the vector
 	/// @note The iterator is incremented by one but moved back to the original position
-	std::string peek()
+	Type peek()
 	{
 		if (notAtStart) {
 			begin++;
@@ -27,7 +28,7 @@ class token_iterator {
 
 	/// @return The next token in the vector
 	/// @note The iterator is incremented by one
-	std::string next()
+	Type next()
 	{
 		if (notAtStart) {
 			begin++;	   // increment the iterator
@@ -47,14 +48,13 @@ class token_iterator {
 
 	/// @return The current token
 	/// @note This will return the current token regardless of where the iterator is
-	std::string getToken() { return *begin; }
-
+	Type getToken() { return *begin; }
 
   private:
-	std::vector<std::string>::const_iterator begin;
-	std::vector<std::string>::const_iterator end;
-	std::vector<std::string>				 tokens;
-	bool									 notAtStart = false;
+	typename std::vector<Type>::const_iterator begin;
+	typename std::vector<Type>::const_iterator end;
+	std::vector<Type>						   tokens;
+	bool									   notAtStart = false;
 };
 
 #endif // NIHILOX_TOKEN_ITERATOR_H

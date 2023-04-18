@@ -8,7 +8,8 @@ set (PROJECT_HEADERS
         src/ast.h
         src/parse/parser.h
         src/parse/pretty_print.h
-        src/token_iterator.h)
+        src/token_iterator.h
+        )
 
 set (PROJECT_SOURCES
         src/lexer.cpp
