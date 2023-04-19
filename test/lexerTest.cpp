@@ -4,15 +4,17 @@
 /// Run the lexer on the given expressions and compare the output to the expected output.
 /// to reduce repeated code
 /// @param expressions A map of expressions to their expected output.
-void runGivenTests(std::unordered_map<std::string, std::vector<std::string>> expressions)
+void runGivenTests(const std::unordered_map<std::string, std::vector<std::string>> &expressions)
 {
-	for (auto &expr: expressions) {
-		int			 size;
-		std::string *tokens = lex(expr.first, size);
+	for (auto expr: expressions) {
+		int	  size;
+		auto *l		 = new lexer(expr.first);
+		auto  tokens = l->lex();
 
-		ASSERT_EQ(size, expr.second.size()) << "expected " << expr.second.size() << " tokens, got " << size;
-		for (int i = 0; i < size; i++) {
-			ASSERT_EQ(tokens[i], expr.second[i]) << "expected " << expr.second[i] << ", got " << tokens[i];
+		std::cout << "\n\n" << std::endl;
+		ASSERT_EQ(tokens.size(), expr.second.size());
+		for (int i = 0; i < tokens.size(); i++) {
+			EXPECT_EQ(std::get<0>(tokens[i]), expr.second[i]);
 		}
 	}
 }
