@@ -31,7 +31,7 @@ std::string *lex(std::string code, int &size)
 /// finite state machine for lexing a string
 /// @note incomplete af
 
-lexer::lexer(std::string &code)
+lexer::lexer(std::string code)
 {
 	std::vector<char> v(code.begin(), code.end());
 	this->tokens	  = new token_iterator(v);
@@ -48,7 +48,15 @@ std::vector<std::tuple<std::string, int, int>> lexer::lex()
 {
 	while (!isAtEnd()) {
 		char c = peek();
-		if (c == '"') {
+		if (c == ' ' || c == '\t' || c == '\r') {
+			next();
+		}
+		else if (c == '\n') {
+			next();
+			row++;
+			col = 0;
+		}
+		else if (c == '"') {
 			addKeyword(lexString());
 		}
 		else if (firstOpChar.find(c) != firstOpChar.end()) {
@@ -68,10 +76,11 @@ std::vector<std::tuple<std::string, int, int>> lexer::lex()
 	return keywords;
 }
 
-std::string lexer::lexNumber(){
+std::string lexer::lexNumber()
+{
 	std::string num;
 	while (std::isdigit(peek())) {
-		num+=next();
+		num += next();
 	}
 	return num;
 }
@@ -113,13 +122,7 @@ std::string lexer::parseOperator()
 char lexer::next()
 {
 	auto nx = this->tokens->next();
-	if (nx == '\n') {
-		this->row++;
-		this->col = 0;
-	}
-	else {
-		this->col++;
-	}
+	this->col++;
 	return nx;
 }
 

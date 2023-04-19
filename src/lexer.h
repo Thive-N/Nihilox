@@ -2,23 +2,23 @@
 #define UNSTABLE_LEXER_H
 
 #include "token_iterator.h"
+#include <set>
 #include <string>
 #include <tuple>
 #include <vector>
-#include <set>
 
 std::string *lex(std::string code, int &size);
 
 class lexer {
   public:
-	explicit lexer(std::string &code);
+	explicit lexer(std::string code);
 	~lexer() = default;
 
 	std::vector<std::tuple<std::string, int, int>> lex();
 
   private:
-	std::set<std::string>					       operators;
-	std::set<char>							       firstOpChar;
+	std::set<std::string>						   operators;
+	std::set<char>								   firstOpChar;
 	void										   addKeyword(const std::string &keyword);
 	char										   next();
 	char										   peek();
