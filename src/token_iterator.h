@@ -44,7 +44,7 @@ template<typename Type> class token_iterator {
 
 	/// @return if the iterator is at the end of the vector
 	/// @note This will check if the iterator is at the end of the vector or beyond
-	bool isAtEnd() { return begin > end; }
+	bool isAtEnd() { return (begin != tokens.end() && begin + 1 == tokens.end()); }
 
 	/// @return The current token
 	/// @note This will return the current token regardless of where the iterator is
