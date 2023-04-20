@@ -35,7 +35,7 @@ lexer::lexer(std::string code)
 {
 	std::vector<char> v(code.begin(), code.end());
 	this->tokens	  = new token_iterator(v);
-	this->row		  = 0;
+	this->row		  = 1;
 	this->col		  = 0;
 	this->keywords	  = std::vector<std::tuple<std::string, int, int>>();
 	this->operators	  = {"==", "!=", "<=", ">=", "/", "::", "+", "-", "*", "&", "=",
@@ -54,7 +54,7 @@ std::vector<std::tuple<std::string, int, int>> lexer::lex()
 		else if (c == '\n') {
 			next();
 			row++;
-			col = 0;
+			col = 1;
 		}
 		else if (c == '"') {
 			addKeyword(lexString());

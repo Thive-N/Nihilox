@@ -7,11 +7,9 @@
 void runGivenTests(const std::unordered_map<std::string, std::vector<std::string>> &expressions)
 {
 	for (auto expr: expressions) {
-		int	  size;
 		auto *l		 = new lexer(expr.first);
 		auto  tokens = l->lex();
 
-		std::cout << "\n\n" << std::endl;
 		ASSERT_EQ(tokens.size(), expr.second.size());
 		for (int i = 0; i < tokens.size(); i++) {
 			EXPECT_EQ(std::get<0>(tokens[i]), expr.second[i]);
@@ -19,6 +17,18 @@ void runGivenTests(const std::unordered_map<std::string, std::vector<std::string
 	}
 }
 
+void runGivenTests(const std::unordered_map<std::string, std::vector<std::tuple<std::string,int,int>>> &expressions){
+	for (const auto& expr: expressions) {
+		auto *l		 = new lexer(expr.first);
+		auto  tokens = l->lex();
+		ASSERT_EQ(tokens.size(), expr.second.size());
+		for (int i = 0; i < tokens.size(); i++) {
+			EXPECT_EQ(std::get<0>(tokens[i]), std::get<0>(expr.second[i]));
+			EXPECT_EQ(std::get<1>(tokens[i]), std::get<1>(expr.second[i]));
+			EXPECT_EQ(std::get<2>(tokens[i]), std::get<2>(expr.second[i]));
+		}
+	}
+}
 /// Basic Expression Tests
 TEST(LexerTests, RegularExpressionTests)
 {
@@ -87,5 +97,12 @@ TEST(LexerTests, CorrectTokenPrecedence)
 	expressions->insert({"!==", {"!=", "="}});
 	expressions->insert({"!===", {"!=", "=="}});
 
+	runGivenTests(*expressions);
+}
+
+TEST(LexerTests, LineRowNumberTest){
+	auto expressions = new std::unordered_map<std::string, std::vector<std::tuple<std::string,int,int>>>();
+	expressions->insert({"1+2;", {{"1",1,1},{"+",1,2},{"2",1,3},{";",1,4}}});
+	expressions->insert({"1+2+string;", {{"1",1,1},{"+",1,2},{"2",1,3},{"+",1,4},{"string",1,10},{";",1,11}}});
 	runGivenTests(*expressions);
 }
