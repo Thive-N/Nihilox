@@ -18,9 +18,5 @@ set (PROJECT_SOURCES
         src/main.cpp
         )
 
-set (TEST_SOURCES
-        test/expressionTest.cpp
-        )
-
 add_executable(nihilox ${PROJECT_HEADERS} ${PROJECT_SOURCES})
 add_subdirectory(test)

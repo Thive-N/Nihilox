@@ -9,7 +9,7 @@ class parser {
 	explicit parser(std::vector<std::string> &);
 
 	virtual ~parser() = default;
-	token_iterator<std::string>		*tokens;
+	token_iterator<std::string> *tokens;
 
 	ExpressionAST					*parseExpression();
 	ExpressionAST					*parseExpression(int precedence);

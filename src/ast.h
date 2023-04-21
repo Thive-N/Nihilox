@@ -14,6 +14,7 @@ class ExpressionAST {
 // NumberAST - Node that represents a numerical value
 class ExpressionASTNumber: public ExpressionAST {
   public:
+
 	~ExpressionASTNumber() override = default;
 	explicit ExpressionASTNumber(std::string val): val(std::move(val)) {}
 	std::string val;

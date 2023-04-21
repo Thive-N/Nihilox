@@ -7,11 +7,7 @@
 
 /// @param tokens_ A Reference to a vector of strings that contain the tokens
 /// @note This moves the tokens_ to the parser class
-parser::parser(std::vector<std::string> &tokens_)
-{
-	tokens = new token_iterator(tokens_);
-}
-
+parser::parser(std::vector<std::string> &tokens_) { tokens = new token_iterator(tokens_); }
 
 StatementASTVariableDeclaration *parser::parseVariableDeclaration()
 {
@@ -23,10 +19,12 @@ StatementASTVariableDeclaration *parser::parseVariableDeclaration()
 		type = tokens->next();
 	}
 	if (tokens->next() != "=")
-		throw std::runtime_error("Error while parsing variable declaration expected '=' but got '" + tokens->getToken() + "'");
+		throw std::runtime_error("Error while parsing variable declaration expected '=' but got '" +
+								 tokens->getToken() + "'");
 	auto expr = parseExpression();
 	if (tokens->next() != ";")
-		throw std::runtime_error("Error while parsing variable declaration expected ';' but got '" + tokens->getToken() + "'");
+		throw std::runtime_error("Error while parsing variable declaration expected ';' but got '" +
+								 tokens->getToken() + "'");
 	return new StatementASTVariableDeclaration(name, type, *expr);
 }
 
@@ -37,7 +35,8 @@ StatementASTConditional *parser::parseConditional()
 	auto trueBlock = parseBlock();
 	if (tokens->peek() != "else") {
 		return new StatementASTConditional(*condition, *trueBlock);
-	} else {
+	}
+	else {
 		tokens->next(); // consume the else keyword
 		auto falseBlock = parseBlock();
 		return new StatementASTConditional(*condition, *trueBlock, *falseBlock);
@@ -47,7 +46,7 @@ StatementASTLoop *parser::parseLoop()
 {
 	tokens->next(); // consume the while keyword
 	auto condition = parseExpression();
-	auto block	 = parseBlock();
+	auto block	   = parseBlock();
 	return new StatementASTLoop(*condition, *block);
 }
 
@@ -71,7 +70,7 @@ FunctionAST *parser::parseReturn()
 {
 	tokens->next();
 	auto proto = parsePrototype();
-	auto body = parseBlock();
+	auto body  = parseBlock();
 	return new FunctionAST(*proto, *body);
 }
 StatementAST *parser::parseStatement()

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-int main(int argc,char** argv)
+int main(int argc, char **argv)
 {
 	if (argc < 2) {
 		std::cout << "Please provide a file to run" << std::endl;
@@ -15,7 +15,7 @@ int main(int argc,char** argv)
 
 	// reading the first argument as a file
 	std::ifstream file(argv[1]);
-	std::string   code((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+	std::string	  code((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 	file.close();
 
 	int			 size;
