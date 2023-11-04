@@ -1,29 +1,41 @@
-# nihilox
+<h1 align="center">
+  <br>
+  Nihilox
+  <br>
+</h1>
 
----
+<h4 align="center">Create the best coffee</h4>
 
-a useless compiler that doesn't compile anything (yet)
+<p align="center">
+  <a href="#overview">Overview</a>
+  •
+  <a href="#installation">Installation</a>
+  •
+  <a href="#roadmap">Roadmap</a>  
+  •
+  <a href="#license">License</a>
+</p>
 
-file extension .nox
--------------------
-todo
--------------------
-- [ ] add a proper readme
-- [ ] add a license?
-- [ ] more explicit tokens (not strings)
-- [ ] redo formatting
-- [ ] code cleanup
-- [ ] add more comments
-- [ ] the roadmap
-- [ ] tokenizer class
-- [ ] add parse error messages
-- [ ] make some things private its getting annoying
-- [ ] make tokens row and col numbers start at the start of the token 
+<p align="center">
+  <a href="http://makeapullrequest.com">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
+  </a>
+  <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/github/license/Thive-N/Nihilox"></a>
+</p>
+<p align="center">
 
----
+</p>
 
-roadmap
--------------------
+# Overview
+
+a custom compiler written in the rust programming language with the inkwell llvm bindings
+
+# Installation
+
+clone this repo and then run cargo run -- <filename>
+
+# roadmap
+
 - [ ] lexer (if you can call it that)
 - [ ] basic ast
 - [ ] basic parsing
@@ -35,3 +47,6 @@ roadmap
 - [ ] more sugar
 - [ ] standard library
 
+# License
+
+Released under the [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html) license.

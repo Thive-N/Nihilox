@@ -1,0 +1,11 @@
+- [ ] add a proper readme
+- [ ] add a license?
+- [ ] more explicit tokens (not strings)
+- [ ] redo formatting
+- [ ] code cleanup
+- [ ] add more comments
+- [ ] the roadmap
+- [ ] tokenizer class
+- [ ] add parse error messages
+- [ ] make some things private its getting annoying
+- [ ] make tokens row and col numbers start at the start of the token 
