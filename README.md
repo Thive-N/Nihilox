@@ -4,7 +4,7 @@
   <br>
 </h1>
 
-<h4 align="center">Create the best coffee</h4>
+<h4 align="center">A custom compiler built in rust</h4>
 
 <p align="center">
   <a href="#overview">Overview</a>
@@ -17,13 +17,8 @@
 </p>
 
 <p align="center">
-  <a href="http://makeapullrequest.com">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
-  </a>
-  <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/github/license/Thive-N/Nihilox"></a>
-</p>
-<p align="center">
-
+  <a href="http://makeapullrequest.com"> <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg"> </a>
+  <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"> <img src="https://img.shields.io/github/license/Thive-N/Nihilox"> </a>
 </p>
 
 # Overview
