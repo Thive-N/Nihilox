@@ -2,7 +2,7 @@
 use regex::Regex;
 
 pub fn lex(raw_code: &str) -> Vec<&str> {
-    let re:Regex = Regex::new(r"(==|!=|<=|>=|/|::|\+|\-|\*|\|&|=|;|:|,|\{|\}|\(|\)|<|>|\[|\]|[a-zA-Z]+([a-zA-Z0-9])*|\d+)").unwrap();
+    let re: Regex = Regex::new(r#"(==|!=|<=|>=|/|::|\+|\-|\*|\|&|=|;|:|,|\{|\}|\(|\)|<|>|\[|\]|".*"|'.'|[a-zA-Z]+([a-zA-Z0-9])*|\d+)"#).unwrap();
     let tokens: Vec<&str> = re.find_iter(raw_code).map(|m| m.as_str()).collect();
     return tokens;
 }
@@ -14,5 +14,8 @@ mod tests {
     #[test]
     fn lexer_test() {
         assert_eq!(vec!["1", "+", "1", "==", "2",], lex("1 + 1 == 2"));
+        assert_eq!(vec!["==", "=",], lex("==="));
+        assert_eq!(vec!["\"test string\"",], lex("\"test string\""));
+        assert_eq!(vec!["'c'",], lex("'c'"));
     }
 }
