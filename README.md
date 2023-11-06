@@ -23,7 +23,7 @@
 <p align="center">
   <a href="http://makeapullrequest.com"> <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge"> </a>
   <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"> <img src="https://img.shields.io/github/license/Thive-N/Nihilox?style=for-the-badge"> </a>
-  <!-- <a href="https://github.com/Thive-N/Nihilox/actions"><img src="https://github.com/Thive-N/Nihilox/workflows/Test/badge.svg?style=for-the-badge"></a> -->
+  <a href="https://github.com/Thive-N/Nihilox/actions"><img src="https://img.shields.io/github/actions/workflow/status/Thive-N/Nihilox/test.yml?style=for-the-badge"></a>
   <a href="https://codecov.io/gh/Thive-N/Nihilox" > <img src="https://img.shields.io/codecov/c/github/Thive-N/Nihilox?style=for-the-badge"/> </a>
 </p>
 
