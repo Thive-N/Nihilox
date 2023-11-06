@@ -44,11 +44,11 @@ clone this repo and then run cargo run -- <filename>
 
 # roadmap
 
-- [ ] lexer (if you can call it that)
+- [x] lexer
 - [ ] basic ast
 - [ ] basic parsing
 - [ ] statement parsing
-- [ ] full ast (not fully complete but good enough)
+- [ ] full ast
 - [ ] full parsing
 - [ ] codegen
 - [ ] add syntactic sugar
