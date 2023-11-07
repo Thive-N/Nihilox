@@ -4,7 +4,7 @@ use regex::Regex;
 pub fn lex(raw_code: &str) -> Vec<&str> {
     let re: Regex = Regex::new(r#"(==|!=|<=|>=|/|::|\+|\-|\*|\|&|=|;|:|,|\{|\}|\(|\)|<|>|\[|\]|".*"|'.'|[a-zA-Z]+([a-zA-Z0-9])*|\d+)"#).unwrap();
     let tokens: Vec<&str> = re.find_iter(raw_code).map(|m| m.as_str()).collect();
-    return tokens;
+    tokens
 }
 
 #[cfg(test)]
