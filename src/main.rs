@@ -3,5 +3,6 @@ mod ast;
 mod lexer;
 #[cfg_attr(coverage_nightly, coverage(off))]
 fn main() {
-    println!("Hello, world!");
+    let tokens = lexer::lex("let x = 65 + 56;");
+    println!("{:#?}", tokens);
 }
