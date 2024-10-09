@@ -8,6 +8,26 @@ pub struct Token {
     col: u32,
 }
 
+struct LexerState<'a> {
+    tokens: Vec<Token>,
+    token: String,
+    row: u32,
+    col: u32,
+    char_iter: std::iter::Peekable<std::str::Chars<'a>>,
+}
+
+impl<'a> LexerState<'a> {
+    fn default(raw_code: &'a str) -> Self {
+        LexerState {
+            tokens: Vec::new(),
+            token: String::new(),
+            row: 1,
+            col: 0,
+            char_iter: raw_code.chars().peekable(),
+        }
+    }
+}
+
 impl Display for Token {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(
@@ -17,93 +37,88 @@ impl Display for Token {
         )
     }
 }
-fn push_token(tokens: &mut Vec<Token>, token: &mut String, row: u32, col: u32) -> bool {
-    if !token.is_empty() {
-        tokens.push(Token {
-            token: token.clone(),
-            row,
-            col,
+
+fn push_token(state: &mut LexerState) {
+    if !state.token.is_empty() {
+        state.tokens.push(Token {
+            token: state.token.clone(),
+            row: state.row,
+            col: state.col,
         });
-        token.clear();
-        return true;
+        state.token.clear();
     }
-    false
 }
 
 pub fn lex(raw_code: &str) -> Vec<Token> {
-    let mut tokens = Vec::new();
-    let mut row = 1;
-    let mut col = 0;
-    let mut token = String::new();
-    let mut char_iter = raw_code.chars().peekable();
-
-    while let Some(c) = char_iter.next() {
+    let mut state = LexerState::default(raw_code);
+    while let Some(c) = state.char_iter.next() {
         match c {
             ' ' | '\t' | '\r' => {
-                push_token(&mut tokens, &mut token, row, col);
-                col += 1;
+                push_token(&mut state);
+                state.col += 1;
             }
 
             '\n' => {
-                push_token(&mut tokens, &mut token, row, col);
-                row += 1;
-                col = 0;
+                push_token(&mut state);
+                state.row += 1;
+                state.col = 0;
             }
 
             // boolean operators
             '<' | '>' | '=' | '!' => {
-                push_token(&mut tokens, &mut token, row, col);
-                col += 1;
-                token.push(c);
-                if char_iter.peek() == Some(&'=') {
-                    char_iter.next();
-                    token.push('=');
-                    push_token(&mut tokens, &mut token, row, col);
-                    col += 1;
+                push_token(&mut state);
+                state.col += 1;
+                state.token.push(c);
+                if state.char_iter.peek() == Some(&'=') {
+                    state.char_iter.next();
+                    state.token.push('=');
+                    push_token(&mut state);
+                    state.col += 1;
                 } else {
-                    push_token(&mut tokens, &mut token, row, col);
+                    push_token(&mut state);
                 }
             }
 
             // single character tokens
             '+' | '-' | '*' | '/' | '%' | ':' | ';' => {
-                push_token(&mut tokens, &mut token, row, col);
-                col += 1;
-                token.push(c);
-                push_token(&mut tokens, &mut token, row, col);
-                col += 1;
+                push_token(&mut state);
+                state.col += 1;
+                state.token.push(c);
+                push_token(&mut state);
+                state.col += 1;
             }
 
             // handle char strings
             '\'' => {
                 let mut escape = false;
-                push_token(&mut tokens, &mut token, row, col);
-                token.push(c);
+                push_token(&mut state);
+                state.token.push(c);
                 // if the next character is a backslash, we need to escape it
-                if char_iter.peek() == Some(&'\\') {
+                if state.char_iter.peek() == Some(&'\\') {
                     escape = true;
-                    token.push(char_iter.next().unwrap());
-                    token.push(char_iter.next().unwrap());
+                    state.token.push(state.char_iter.next().unwrap());
+                    state.token.push(state.char_iter.next().unwrap());
                 } else {
-                    token.push(char_iter.next().unwrap());
+                    state.token.push(state.char_iter.next().unwrap());
                 }
-                token.push(char_iter.next().unwrap());
-                push_token(&mut tokens, &mut token, row, col);
-                col += 1;
+                state.token.push(state.char_iter.next().unwrap());
+                push_token(&mut state);
+                state.col += 1;
                 if escape {
-                    col += 1;
+                    state.col += 1;
                 }
             }
 
             '\"' => {
-                push_token(&mut tokens, &mut token, row, col);
+                push_token(&mut state);
                 let mut offset = 1;
-                token.push(c);
-                while let Some(c) = char_iter.next() {
-                    token.push(c);
+                state.token.push(c);
+
+                while let Some(c) = state.char_iter.next() {
+                    state.token.push(c);
                     offset += 1;
                     if c == '\\' {
-                        token.push(char_iter.next().unwrap());
+                        state.token.push(state.char_iter.next().unwrap());
                         offset += 1;
                         continue;
                     }
@@ -111,25 +126,22 @@ pub fn lex(raw_code: &str) -> Vec<Token> {
                         break;
                     }
                 }
-                push_token(&mut tokens, &mut token, row, col);
-                col += offset;
+                push_token(&mut state);
+                state.col += offset;
             }
 
             // if it hasnt been handled yet, add it to the token as it is either a number or a variable
             // todo: find a way to handle initial column position on iterations
             _ => {
-                col += 1;
-                token.push(c);
+                state.col += 1;
+                state.token.push(c);
             }
         }
     }
 
-    // Add the last token if it's not empty
-    if !token.is_empty() {
-        tokens.push(Token { token, row, col });
-    }
+    push_token(&mut state);
 
-    tokens
+    state.tokens
 }
 
 #[cfg(test)]
