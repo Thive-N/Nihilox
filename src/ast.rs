@@ -1,38 +1,36 @@
 #![allow(dead_code)]
 /// representation of a expression in AST
-
+#[derive(Debug, PartialEq)]
 pub enum ExpressionASTNode {
-    Number,
-    Variable,
-    Binary,
-    Unary,
+    Number {
+        value: i32,
+    },
+    Variable {
+        name: String,
+    },
+    Binary {
+        left: Box<ExpressionASTNode>,
+        op: BinaryOperator,
+        right: Box<ExpressionASTNode>,
+    },
+    Unary {
+        op: UnaryOperator,
+        operand: Box<ExpressionASTNode>,
+    },
+    Paren {
+        expr: Box<ExpressionASTNode>,
+    },
 }
 
-/// representation of a number in an expression tree
-pub struct Number {
-    pub value: i64,
+#[derive(Debug, PartialEq)]
+pub enum BinaryOperator {
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
 }
 
-/// representation of a variable in an expression tree
-pub struct Variable {
-    pub name: String,
-}
-
-/// representation of a binary operation in an expression tree
-pub struct Binary {
-    pub op: String,
-    pub lhs: ExpressionASTNode,
-    pub rhs: ExpressionASTNode,
-}
-
-/// representation of a unary operation in an expression tree
-pub struct Unary {
-    pub op: String,
-    pub expression: ExpressionASTNode,
-}
-
-// representation of a function call in an expression tree
-pub struct FunctionCall {
-    pub name: String,
-    pub args: Vec<ExpressionASTNode>,
+#[derive(Debug, PartialEq)]
+pub enum UnaryOperator {
+    Negate,
 }

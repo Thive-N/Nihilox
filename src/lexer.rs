@@ -3,9 +3,9 @@
 use std::fmt::Display;
 #[derive(Debug)]
 pub struct Token {
-    token: String,
-    row: u32,
-    col: u32,
+    pub token: String,
+    pub row: u32,
+    pub col: u32,
 }
 
 struct LexerState<'a> {
@@ -83,7 +83,7 @@ pub fn lex(raw_code: &str) -> Vec<Token> {
             }
 
             // single character tokens
-            '+' | '-' | '*' | '/' | '%' | ':' | ';' => {
+            '+' | '-' | '*' | '/' | '%' | ':' | ';' | '(' | ')' => {
                 set_token_location(&mut state);
                 state.token.push(c);
                 push_token(&mut state);

@@ -3,6 +3,4 @@
         "editor.defaultFormatter": "rust-lang.rust-analyzer", // Makes the magic
         "editor.formatOnSave": true // Optional
     },
-    "rust-analyzer.linkedProjects": [".\\Cargo.toml"],
-    "rust-analyzer.checkOnSave.command": "clippy"
 }
